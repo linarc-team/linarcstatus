@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linarc Team Status</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0b0f;
+      --panel: #111118;
+      --panel-2: #171723;
+      --card: #1f1f2e;
+      --accent: #ffffff;
+      --muted: #aab0c0;
+      --success: #40d27f;
+      --warn: #ffb347;
+      --error: #ff5c5c;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+      --glass: rgba(255, 255, 255, 0.02);
+      --border: 1px solid rgba(255, 255, 255, 0.08);
+      --grid-gap: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.06), transparent 30%), radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.05), transparent 25%), var(--bg);
+      color: var(--accent);
+      min-height: 100vh;
+      padding: 32px 18px 64px;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 20px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+      border-radius: 18px;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 12px;
+      z-index: 10;
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand img {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--glass);
+      border: var(--border);
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      color: var(--success);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 6px rgba(64, 210, 127, 0.14), 0 0 0 12px rgba(64, 210, 127, 0.08);
+    }
+
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .meta strong {
+      color: var(--accent);
+    }
+
+    .panel {
+      margin-top: 22px;
+      background: var(--panel);
+      border-radius: 20px;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .panel p.desc {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--grid-gap);
+    }
+
+    .card {
+      background: var(--panel-2);
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: 0.2px;
+    }
+
+    .pill {
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(64, 210, 127, 0.12);
+      color: var(--success);
+      border: 1px solid rgba(64, 210, 127, 0.35);
+    }
+
+    .pill.warn {
+      color: var(--warn);
+      background: rgba(255, 179, 71, 0.15);
+      border-color: rgba(255, 179, 71, 0.35);
+    }
+
+    .pill.error {
+      color: var(--error);
+      background: rgba(255, 92, 92, 0.15);
+      border-color: rgba(255, 92, 92, 0.35);
+    }
+
+    .sparkline {
+      display: grid;
+      grid-template-columns: repeat(30, 1fr);
+      gap: 5px;
+      margin: 8px 0 10px;
+      align-items: end;
+    }
+
+    .uptime-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .bar {
+      height: 46px;
+      border-radius: 4px;
+      background: var(--success);
+      position: relative;
+      overflow: hidden;
+      transition: opacity 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+      transform-origin: bottom center;
+      cursor: pointer;
+    }
+
+    .bar.warn {
+      background: var(--warn);
+    }
+
+    .bar.error {
+      background: var(--error);
+    }
+
+    .bar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.2));
+      mix-blend-mode: overlay;
+    }
+
+    .bar:hover {
+      transform: scaleY(1.2);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+    }
+
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .status-chip {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .uptime-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <img src="https://static.vecteezy.com/ti/vetor-gratis/p1/4967560-dark-crow-head-illustraton-simple-vetor.jpg" alt="Linarc Team" />
+        <div>
+          <h1>Linarc Team Status</h1>
+          <div class="meta" id="meta-info">
+            <!-- filled by JS -->
+          </div>
+        </div>
+      </div>
+      <div class="status-chip" id="overall-chip">
+        <span class="status-dot"></span>
+        <span>All Systems Operational</span>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2>Visão Geral</h2>
+      <p class="desc">Monitoramento dos últimos 30 dias. Tudo é calculado automaticamente a partir dos registros de eventos.</p>
+      <div class="grid" id="cards"></div>
+    </section>
+
+    <div class="footer">
+      Atualiza sozinho ao abrir a página. Para ajustar algum evento, edite o objeto <code>services</code> no código.
+    </div>
+  </div>
+
+  <script>
+    // Configuração de eventos (edite aqui)
+    // day: 29 = hoje, 28 = ontem ... 0 = 30 dias atrás
+    // status: 'ok' | 'outage' | 'down'
+    const services = {
+      bots: [
+        {
+          day: 19, // fixo na linha do tempo (10 dias atrás dentro da janela de 30)
+          status: 'outage',
+          reason: 'Instabilidade por muitos usos',
+          duration: '45 mins',
+          date: '01/12/2025'
+        }
+      ],
+      website: [],
+      server: [],
+      mainComputer: [],
+      teamComputer: [],
+      teamOS: [],
+      teamInternet: []
+    };
+
+    // Mapeamento de exibição
+    const serviceMeta = {
+      bots: { label: 'Bot', emoji: '🤖' },
+      website: { label: 'Website', emoji: '🕸️' },
+      server: { label: 'Server', emoji: '🗄️' },
+      mainComputer: { label: 'Main Computer', emoji: '💻' },
+      teamComputer: { label: 'Team Computer', emoji: '🧑‍💻' },
+      teamOS: { label: 'Team OS', emoji: '🛠️' },
+      teamInternet: { label: 'Team Internet', emoji: '🌐' }
+    };
+
+    function buildBars(events) {
+      const bars = [];
+      for (let i = 0; i < 30; i++) {
+        const hit = events.find(e => e.day === i);
+        let cls = 'ok';
+        if (hit) {
+          cls = hit.status === 'down' ? 'error' : 'warn';
+        }
+        bars.push({ cls, hit, dayIndex: i });
+      }
+      return bars.reverse(); // mostra hoje à direita
+    }
+
+    function uptime(events) {
+      const impacted = events.length;
+      const score = Math.max(0, 30 - impacted) / 30;
+      return (score * 100).toFixed(2);
+    }
+
+    function latestIssue(events) {
+      if (!events.length) return null;
+      return [...events].sort((a, b) => b.day - a.day)[0];
+    }
+
+    function formatDateFromDay(dayIndex) {
+      const date = new Date();
+      date.setDate(date.getDate() - (29 - dayIndex));
+      return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+    }
+
+    function getDisplayDate(hit, dayIndex) {
+      if (hit?.date) return hit.date;
+      return formatDateFromDay(dayIndex);
+    }
+
+    function barLabel(hit, dayIndex) {
+      if (!hit) return `Estável • ${getDisplayDate(null, dayIndex)}`;
+      const label = hit.status === 'down' ? 'Fora do ar' : 'Instabilidade por muitos usos';
+      return `${label} • ${hit.reason || 'Sem detalhes'} • ${getDisplayDate(hit, dayIndex)}`;
+    }
+
+    function render() {
+      const cards = document.getElementById('cards');
+      cards.innerHTML = '';
+
+      const now = new Date();
+      const metaInfo = document.getElementById('meta-info');
+      metaInfo.textContent = `Atualizado automaticamente em ${now.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })} • ${now.toLocaleTimeString('pt-BR')}`;
+
+      let anyWarn = false;
+      let anyError = false;
+
+      Object.entries(serviceMeta).forEach(([key, { label, emoji }]) => {
+        const events = services[key] || [];
+        const bars = buildBars(events);
+        const lastIssue = latestIssue(events);
+        const up = uptime(events);
+
+        if (lastIssue?.status === 'down') anyError = true;
+        if (lastIssue && lastIssue.status !== 'down') anyWarn = true;
+
+        let pillClass = '';
+        let pillText = 'Estável';
+        if (lastIssue) {
+          pillClass = lastIssue.status === 'down' ? 'error' : '';
+          pillText = lastIssue.status === 'down' ? 'Incidente crítico' : 'Estável';
+        }
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-header">
+            <h3>${emoji} ${label}</h3>
+            <span class="pill ${pillClass}">${pillText}</span>
+          </div>
+          <div class="sparkline">
+            ${bars.map(b => {
+              const barClass = b.cls === 'ok' ? 'bar' : `bar ${b.cls}`;
+              return `<div class="${barClass}" title="${barLabel(b.hit, b.dayIndex)}"></div>`;
+            }).join('')}
+          </div>
+          <div class="uptime-row">
+            <span>30 dias atrás</span>
+            <strong style="color: var(--accent);">${up}% uptime</strong>
+            <span>Hoje</span>
+          </div>
+          <div class="timeline">
+            <span>30d</span>
+            <span>20d</span>
+            <span>10d</span>
+            <span>Hoje</span>
+          </div>
+          ${lastIssue ? `<div style="margin-top:10px; font-size:13px; color: var(--muted);">
+            Último incidente: ${getDisplayDate(lastIssue, lastIssue.day)} — ${lastIssue.reason} (${lastIssue.duration})
+          </div>` : `<div style="margin-top:10px; font-size:13px; color: var(--muted);">Sem incidentes registrados.</div>`}
+        `;
+        cards.appendChild(card);
+      });
+
+      const chip = document.getElementById('overall-chip');
+      const dot = chip.querySelector('.status-dot');
+      const label = chip.querySelector('span:last-child');
+      if (anyError) {
+        dot.style.background = 'var(--error)';
+        dot.style.boxShadow = '0 0 0 6px rgba(255,92,92,0.16), 0 0 0 12px rgba(255,92,92,0.08)';
+        chip.style.color = 'var(--error)';
+        label.textContent = 'Incidentes em andamento';
+      } else if (anyWarn) {
+        dot.style.background = 'var(--success)';
+        dot.style.boxShadow = '0 0 0 6px rgba(64,210,127,0.14), 0 0 0 12px rgba(64,210,127,0.08)';
+        chip.style.color = 'var(--success)';
+        label.textContent = 'Estável';
+      } else {
+        dot.style.background = 'var(--success)';
+        dot.style.boxShadow = '0 0 0 6px rgba(64,210,127,0.14), 0 0 0 12px rgba(64,210,127,0.08)';
+        chip.style.color = 'var(--success)';
+        label.textContent = 'All Systems Operational';
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
+
